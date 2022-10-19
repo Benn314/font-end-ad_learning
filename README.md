@@ -23,7 +23,7 @@ Xxxxxx
 
 ​	
 
-*本项目学习目录：*
+*本项目学习目录如下：*
 
 1. [Promise](https://www.bilibili.com/video/BV1GA411x7z1?spm_id_from=333.999.0.0)
 2. [TS学习](https://www.bilibili.com/video/BV1Xy4y1v7S2?spm_id_from=333.999.0.0)
