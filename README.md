@@ -7,18 +7,18 @@
 **学习进度汇报模板**
 
 ```apl
-x月xx日 【name】
+x月xx日 【Ben】
 
 遇到的问题
 Xxxxxx
 
 今日小结
-1.学习了xxx
-2.看到了第xx集
-3.xxx
+1. 学习了xxx
+2.【Promise】看到了第xx集
+3. xxx
 
 明日计划
-1.学到第xx集
+1.【Promise】学到第xx集
 ```
 
 ​	
