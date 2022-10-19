@@ -1,6 +1,6 @@
 # 前端进阶
 
-冒险者你好！欢迎你来到前端进阶路线，首先恭喜你成功通关小米商城的项目学习！
+冒险者你好！欢迎你来到前端进阶路线，首先 恭喜你成功通关小米商城的项目学习！
 
 ​	
 
@@ -23,7 +23,7 @@ Xxxxxx
 
 ​	
 
-*本项目学习目录如下：*
+*本项目学习目录：*
 
 1. [Promise](https://www.bilibili.com/video/BV1GA411x7z1?spm_id_from=333.999.0.0)
 2. [TS学习](https://www.bilibili.com/video/BV1Xy4y1v7S2?spm_id_from=333.999.0.0)
