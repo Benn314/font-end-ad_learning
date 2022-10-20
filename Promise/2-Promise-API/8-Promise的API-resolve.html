@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Promise API - resolve</title>
+</head>
+<body>
+  <script>
+    //
+    let p1 = Promise.resolve(521);
+    /** 
+     * 如果传入的参数为 非Promise类型的对象 则返回的结果为成功promise对象
+     * 如果传入的参数为 Promise对象 则参数的结果（也就是这个Promise参数对象的结果）决定了外层 resolve 的结果
+    */
+   let p2 = Promise.resolve(new Promise((resolve, reject)=>{
+    // resolve('OK');
+    reject('Error');
+   }));
+    console.log(p2);
+    //如果是resolve则不用then或catch来处理 但如果是reject则必须要有 回调处理error 否则控制台会报错
+    p2.catch(reason=>{
+    });
+  </script>
+</body>
+</html>

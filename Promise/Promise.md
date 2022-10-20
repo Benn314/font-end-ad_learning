@@ -401,3 +401,338 @@ promiseResult保存的是我们异步任务成功或失败的结果
 ![image-20221020141226194](Promise.assets/image-20221020141226194.png)
 
 then()方法返回的也是一个promise对象 后面会讲
+
+​	
+
+# 13 Promise的API-构造函数-then-catch
+
+需要接收一个函数参数 可以使用箭头函数去声明 也可以使用匿名函数去申请
+
+![image-20221020193659606](Promise.assets/image-20221020193659606.png)
+
+catch只能指定失败的回调
+
+**7-Promise的API-1.html**
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    //
+    let p = new Promise((resolve,reject)=>{
+      //同步调用
+      // console.log(111);
+      // 修改 promise 对象的状态
+      reject('error');
+    });
+
+    // console.log(222);
+
+    //执行 catch 方法
+    p.catch(reason=>{
+      console.log(reason);
+    });
+  </script>
+</body>
+</html>
+```
+
+​	
+
+# 14 Promise.resolve方法
+
+resolve相较于then和catch来说不太一样，它是属于Promise函数对象的 它并不属于实例对象 能快速封装一个值 转换成Promise对象
+
+![image-20221020201335282](Promise.assets/image-20221020201335282.png)
+
+**8-Promise的API-resolve.html**
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Promise API - resolve</title>
+</head>
+<body>
+  <script>
+    //
+    let p1 = Promise.resolve(521);
+    /** 
+     * 如果传入的参数为 非Promise类型的对象 则返回的结果为成功promise对象
+     * 如果传入的参数为 Promise对象 则参数的结果（也就是这个Promise参数对象的结果）决定了外层 resolve 的结果
+    */
+   let p2 = Promise.resolve(new Promise((resolve, reject)=>{
+    // resolve('OK');
+    reject('Error');
+   }));
+    console.log(p2);
+    //如果是resolve则不用then或catch来处理 但如果是reject则必须要有 回调处理error 否则控制台会报错
+    p2.catch(reason=>{
+    });
+  </script>
+</body>
+</html>
+```
+
+​	
+
+# 15 Promise.reject方法
+
+> resolve产出的Promise对象可以是成功的也可以是失败的 但reject产出的一定是失败的
+
+**9-Promise的API-reject.html**
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Promise API - reject</title>
+</head>
+<body>
+  <script>
+    //
+    // let p = Promise.reject(521);
+    // let p2 = Promise.reject('I Love U');
+    // console.log(p);
+    // console.log(p2);
+
+    let p3 = Promise.reject(new Promise((resolve, reject)=>{ // 匿名函数
+      resolve('OK');
+    }));
+
+    console.log(p3);
+    p3.catch(reason=>{
+      reason.then(value=>{
+        console.log(value); // OK  嵌套Promise获取里面的值 因为嵌套里的Promise是resolve 所以用value 而不是reason
+      })
+      console.log(reason); // 返回一个Promise对象
+    })
+  </script>
+</body>
+</html>
+```
+
+​	
+
+# 16 Promise.all方法
+
+![image-20221020210509816](Promise.assets/image-20221020210509816.png)
+
+**10-Promise的API-all.html**
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Promise API - all</title>
+</head>
+<body>
+  <script>
+    let p1 = new Promise((resolve,reject)=>{
+      resolve('OK');
+    })
+    // let p2 = Promise.resolve('success');
+    let p2 = Promise.reject('Error');
+    let p3 = Promise.resolve('Oh yeah!');
+
+    //
+    const result = Promise.all([p1,p2,p3]);
+    console.log(result); //一个失败 all就都失败 且失败的结果值为那个失败Promise对象的结果值（也就是p2的结果值：Error）
+
+  </script>
+</body>
+</html>
+```
+
+​	
+
+# 17 Promise.race方法
+
+![image-20221020215915203](Promise.assets/image-20221020215915203.png)
+
+race是竞赛 赛跑的意思
+
+**11-Promise的API-race.html**
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Promise API - race</title>
+</head>
+<body>
+  <script>
+    let p1 = new Promise((resolve,reject)=>{
+      setTimeout(()=>{
+        resolve('OK');
+      },1000);
+    })
+    let p2 = Promise.resolve('Success');
+    let p3 = Promise.resolve('Oh yeah');
+
+    //调用
+    const result = Promise.race([p1,p2,p3]);
+
+    console.log(result);
+  </script>
+</body>
+</html>
+```
+
+​	
+
+# 18 Promise关键问题-如何修改对象的状态
+
+不了解关键问题我们写代码时可能会不完整或不完善
+
+**1-状态修改.html**
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Promise关键问题 - Promise 对象状态改变的方式</title>
+</head>
+<body>
+  <script>
+    let p = new Promise((resolve,reject)=>{
+      //1.resolve 函数
+      // resolve('ok'); // pending => fulfilled(resolved)
+      //2.reject 函数
+      // reject('error'); // pending => rejected
+      //3.抛出错误
+      throw '出问题了'; //也可以改变Promise对象状态 pending => rejected
+    })
+
+    console.log(p);
+  </script>
+</body>
+</html>
+```
+
+​	
+
+# 19 Promise关键问题-能否执行多个回调
+
+![image-20221020224228492](Promise.assets/image-20221020224228492.png)
+
+意思就是当Promise是A状态的时候 A状态的回调就都会调用
+
+**2-能否执行多个回调.html**
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Promise关键问题 - Promise 指定多个回调</title>
+</head>
+<body>
+  <script>
+    let p = new Promise((resolve,reject)=>{
+      // resolve('OK')
+    })
+
+    //指定回调 - 1
+    p.then(value=>{
+      console.log(value);
+    })
+
+    //指定回调 - 2
+    p.then(value=>{
+      alert(value);
+    })
+  </script>
+</body>
+</html>
+```
+
+​	
+
+# 20 Promise关键问题-改变状态与指定回调的顺序问题
+
+![image-20221020225324231](Promise.assets/image-20221020225324231.png)
+
+result指定promise状态先执行还是指定回调then/catch先执行？
+
+同步任务时resolve比then先执行
+
+异步任务时resolve比then后执行（例如加setTimeout包裹）
+
+> 如果先指定的回调 那当状态发生改变时 回调函数就会调用 得到数据
+
+​	
+
+# 21 Promise关键问题-then方法返回结果由什么决定
+
+![image-20221020231357729](Promise.assets/image-20221020231357729.png)
+
+**4-then方法的返回结果由什么决定.html**
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Promise关键问题 - Promise then方法的返回结果特点</title>
+</head>
+<body>
+  <script>
+    let p = new Promise((resolve,reject)=>{
+      resolve('ok');
+    });
+    //执行 then 方法
+    let result = p.then(value=>{
+      // console.log(value);
+      // 1.抛出错误
+      // throw '出了问题';
+      // 2.返回结果是 非Promise 类型的对象
+      // return 521;
+      // 3.返回结果是 Promise 对象
+      return new Promise((resolve,reject)=>{
+        // resolve('success');
+        reject('error');
+      })
+    },reason=>{
+      console.warn(reason);
+    })
+
+    console.log(result);
+  </script>
+</body>
+</html>
+```
+
+​	
+
+# 22 Promise关键问题-串联多个任务
+
+![image-20221020235834926](Promise.assets/image-20221020235834926.png)
+
+原理就是then的返回结果也是一个promise对象

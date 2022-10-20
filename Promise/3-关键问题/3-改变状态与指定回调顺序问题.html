@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Promise关键问题 - Promise 指定多个回调</title>
+</head>
+<body>
+  <script>
+    let p = new Promise((resolve,reject)=>{
+      setTimeout(()=>{
+        resolve('OK');
+      },1000);
+    });
+
+    p.then(value=>{
+      console.log(value);//resolve加了setTimeout时 比resolve先执行 然后等resolve的值传递过来输出
+    },reason=>{
+
+    })
+  </script>
+</body>
+</html>

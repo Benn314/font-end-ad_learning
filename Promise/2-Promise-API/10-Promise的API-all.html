@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Promise API - all</title>
+</head>
+<body>
+  <script>
+    let p1 = new Promise((resolve,reject)=>{
+      resolve('OK');
+    })
+    // let p2 = Promise.resolve('success');
+    let p2 = Promise.reject('Error');
+    let p3 = Promise.resolve('Oh yeah!');
+
+    //
+    const result = Promise.all([p1,p2,p3]);
+    console.log(result); //一个失败 all就都失败 且失败的结果值为那个失败Promise对象的结果值（也就是p2的结果值：Error）
+
+  </script>
+</body>
+</html>

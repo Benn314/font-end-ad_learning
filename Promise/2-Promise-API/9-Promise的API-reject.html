@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Promise API - reject</title>
+</head>
+<body>
+  <script>
+    //
+    // let p = Promise.reject(521);
+    // let p2 = Promise.reject('I Love U');
+    // console.log(p);
+    // console.log(p2);
+
+    let p3 = Promise.reject(new Promise((resolve, reject)=>{ // 匿名函数
+      resolve('OK');
+    }));
+
+    console.log(p3);
+    p3.catch(reason=>{
+      reason.then(value=>{
+        console.log(value); // OK  嵌套Promise获取里面的值 因为嵌套里的Promise是resolve 所以用value 而不是reason
+      })
+      console.log(reason); // 返回一个Promise对象
+    })
+  </script>
+</body>
+</html>
