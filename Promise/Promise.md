@@ -13,3 +13,391 @@ Promise是es6进行异步编程的新解决方案 从语法来说 它是一个�
 # 02 Promise介绍
 
 ![image-20221020083022433](Promise.assets/image-20221020083022433.png)
+
+异步编程
+
+- fs 文件操作 fs是node.js下边的模块可以对计算机的磁盘进行读写操作
+
+- Mongodb数据库操作
+- AJAX 网络请求
+- 定时器 例如setTimeout也是一个异步编程
+
+Promise之前都是纯回调函数进行处理
+
+![image-20221020083900775](Promise.assets/image-20221020083900775.png)
+
+【面试考点】Promise支持链式调用 可以解决回调地狱问题
+
+![image-20221020084340145](Promise.assets/image-20221020084340145.png)
+
+一个回调函数套着另外一个异步任务 无限套娃
+
+![image-20221020084609629](Promise.assets/image-20221020084609629.png)
+
+Promise是构造函数 可以实例化对象封装异步操作 获取成功和失败的结果 其优势是支持链式调用 可以解决回调地狱问题
+
+Promise可以包裹一个异步操作
+
+​	
+
+# 03 Promise初体验（1）
+
+# 04 Promise初体验（2）
+
+增加了传参打印随机生成抽奖数 传给 .then() 作为resolve/reject
+
+**1-初体验.html**
+
+```html
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>基本使用</title>
+    <link crossorigin='anonymous' href="https://cdn.bootcss.com/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h2 class="page-header">Promise 初体验</h2>
+        <button class="btn btn-primary" id="btn">点击抽奖</button>
+    </div>
+    <script>
+        //生成随机数
+        function rand(m,n){
+            return Math.ceil(Math.random() * (n-m+1)) + m-1;
+        }
+        /**
+            点击按钮,  1s 后显示是否中奖(30%概率中奖)
+                若中奖弹出    恭喜恭喜, 奖品为 10万 RMB 劳斯莱斯优惠券
+                若未中奖弹出  再接再厉
+        */
+        //获取元素对象
+        const btn = document.querySelector('#btn');
+        //绑定单击事件
+        btn.addEventListener('click', function(){
+            //定时器
+            // setTimeout(() => {
+            //     //30%  1-100  1 2 30
+            //     //获取从1 - 100的一个随机数
+            //     let n = rand(1, 100);
+            //     //判断
+            //     if(n <= 30){
+            //         alert('恭喜恭喜, 奖品为 10万 RMB 劳斯莱斯优惠券');
+            //     }else{
+            //         alert('再接再厉');
+            //     }
+            // }, 1000);
+
+            //Promise 形式实现
+            // resolve 解决  函数类型的数据
+            // reject  拒绝  函数类型的数据
+            const p = new Promise((resolve, reject) => { //Promise实例化对象需要接收参数 这个参数是一个函数类型的值 而且函数还有两个形参 叫resolve和reject 当然你写a和b也行 潜规则叫resolve和reject
+                setTimeout(() => {
+                    //30%  1-100  1 2 30
+                    //获取从1 - 100的一个随机数
+                    let n = rand(1, 100);
+                    //判断
+                    if(n <= 30){
+                        resolve(n); // 将 promise 对象的状态设置为 『成功』
+                    }else{
+                        reject(n); // 将 promise 对象的状态设置为 『失败』
+                    }
+                }, 1000);
+            });
+
+            console.log(p);
+            //调用 then 方法 执行时会接收两个【函数参数】 第一个函数参数对象是对象成功时的回调，第二个是对象失败时的回调
+            // value 值
+            // reason 理由
+            // 写value和reason也是潜规则 你写a和b也没问题
+            p.then((value) => {
+                alert('恭喜恭喜, 奖品为 10万 RMB 劳斯莱斯优惠券, 您的中奖数字为 ' + value);
+            }, (reason) => {
+                alert('再接再厉, 您的号码为 ' + reason);
+            });
+
+        });
+
+    </script>
+</body>
+
+</html>
+```
+
+​	
+
+# 05 Promise实践练习-fs读取文件
+
+用Promise的好处就是你可以先写Promise的事件处理逻辑 写完再在下面写事件处理内容
+
+**2-Promise实践练习-fs模块.js**
+
+```js
+//
+const fs = require('fs');
+
+//回调函数的形式 没有带Promise的形式
+// fs.readFile('./resource/content.txt',(err,data)=>{
+//   // 如果出错 则抛出错误
+//   if(err) throw err;
+//   //没有错误 输出文件内容
+//   // console.log(data); // 只输出Buffer流
+//   console.log(data.toString()); //将Buffer流转成字符串
+// });
+
+//Promise形式
+let p = new Promise((resolve,reject) => {
+  fs.readFile('./resource/content.txt',(err,data)=>{
+    //如果出错
+    if(err) reject(err);
+    //如果成功
+    resolve(data);
+  });
+});
+
+//调用 then 对结果进行处理
+// 第一个函数参数为成功情况
+// 第二个函数参数为失败情况
+p.then(value=>{
+  console.log(value.toString());
+},reason=>{
+  console.log(reason);
+});
+```
+
+​	
+
+# 06 Promise实践练习-AJAX请求
+
+参考文章
+
+[Http status:0 通常是什么原因引起的](https://www.publiccms.com/question/2020/03-26/509.html)
+
+[【译】3种解决CORS错误的方式与Access-Control-Allow-Origin的作用原理](https://segmentfault.com/a/1190000022506474)
+
+​	
+
+**3-Promise实践练习-AJAX请求.html**
+
+```HTML
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+    <title>Promise 封装 AJAX</title>
+    <link crossorigin='anonymous' href="https://cdn.bootcss.com/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h2 class="page-header">Promise 封装 AJAX 操作</h2>
+        <button class="btn btn-primary" id="btn">点击发送 AJAX</button>
+    </div>
+    <script>
+        //接口地址 https://api.apiopen.top/getJoke
+        //获取元素对象
+        const btn = document.querySelector('#btn');
+
+        btn.addEventListener('click', function(){
+            //创建 Promise
+            const p = new Promise((resolve, reject) => {
+                //1.创建对象
+                const xhr = new XMLHttpRequest();
+                //2. 初始化
+                xhr.open('GET', 'https://cors-anywhere.herokuapp.com/https://api.apiopen.top/getJoke');
+                //3. 发送
+                xhr.send();
+                //4. 处理响应结果
+                xhr.onreadystatechange = function(){
+                    if(xhr.readyState === 4){
+                        //判断响应状态码 2xx   
+                        if(xhr.status >= 200 && xhr.status < 300){
+                            //控制台输出响应体
+                            resolve(xhr.response); // xhr.response里面存的就是响应体
+                        }else{
+                            //控制台输出响应状态码
+                            reject(xhr.status);
+                        }
+                    }
+                }
+            });
+            //调用then方法
+            p.then(value=>{
+                console.log(value);
+            }, reason=>{
+                console.warn(reason); // warn颜色区分log
+            });
+        });
+    </script>
+</body>
+</html>
+```
+
+​	
+
+# 07 Promise封装fs读取文件操作
+
+![image-20221020125257087](Promise.assets/image-20221020125257087.png)
+
+**4-Promise封装练习-fs模块.js**
+
+```js
+/**
+ * 封装一个函数 mineReadFile 读取文件内容
+ * 参数：path 文件路径
+ * 返回：promise 对象
+ */
+function mineReadFile(path){
+  return new Promise((resolve,reject)=>{
+    //读取文件 这里用用一个来变量接收实例化对象比较好 这里懒了 没接收直接写
+    require('fs').readFile(path,(err,data)=>{
+      //判断
+      if(err) reject(err);
+      //成功
+      resolve(data);
+    })
+  })
+}
+
+mineReadFile('./resource/content.txt') //then可以回车到下一行 可以的
+.then(value=>{
+  //输出文件内容
+  console.log(value.toString());
+},reason=>{
+  console.log(reason);
+}); // 直接跟.then 因为它返回的结果是一个promise对象
+
+```
+
+​	
+
+# 08 util.promisify方法进行promise风格转化
+
+![image-20221020131447909](Promise.assets/image-20221020131447909.png)
+
+也就是错误优先的回调
+
+异步的API基本上回调函数都是error
+
+​	
+
+**5-util.promisify方法.js**
+
+```js
+/**
+ * util.promisify 方法  (node.js内置的方法)
+ * 也就是错误优先的回调
+ */
+//引入 util 模块
+const util = require('util');
+//引入 fs 模块
+const fs = require('fs');
+// 返回一个新的函数
+let mineReadFile = util.promisify(fs.readFile);
+
+mineReadFile('./resource/content.txt').then(value=>{
+  console.log(value.toString());
+})
+
+/**
+ * 对于以后使用promise 我们不需要每一个都手动封装 
+ * 而是可以借助于util.promisify这个方法 将原来那种回调函数风格的方法转变成一个promise风格的函数
+ * 这样使用起来会更加方便一些
+ */
+
+```
+
+​	
+
+# 09 Promise封装AJAX请求
+
+**6-Promise封装练习.html**
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Promise封装AJAX操作</title>
+</head>
+<body>
+  <script>
+    /** 
+     * 封装一个函数 sendAJAX 发送 GET AJAX请求
+     * 参数 URL
+     * 返回结果 Promise 对象
+     */
+    function sendAJAX(url){
+      return new Promise((resolve,reject)=>{
+        const xhr = new XMLHttpRequest();
+        xhr.responseType = 'json'; // 格式是可以调整的
+        xhr.open("GET",url);
+        xhr.send();
+        //处理结果
+        xhr.onreadystatechange = function(){
+          if(xhr.readyState === 4){ // readyState为4是所有结果都返回时的这么一个状态
+            //判断成功 状态码为2xx的时候为成功
+            if(xhr.status >= 200 && xhr.status < 300){
+              // 成功的结果
+              resolve(xhr.response);
+            }else{
+              reject(xhr.status);
+            }
+          }
+        }
+      })
+    }
+
+    // 这么一封装 AJAX请求也变得简单起来
+    sendAJAX('https://api.apiopen.top/getJoke')
+    .then(value=>{
+      console.log(value);
+    }, reason=>{
+      console.warn(reason);
+    });
+  </script>
+</body>
+</html>
+```
+
+​	
+
+# 10 promise对象状态属性介绍
+
+【重点】
+
+状态是promise实例对象当中的一个属性 它叫做promiseStatus
+
+pending 待定的
+
+![image-20221020135817266](Promise.assets/image-20221020135817266.png)
+
+它不可能由成功变为失败也不可以从失败变为成功 且状态只能改变一次
+
+![image-20221020135924033](Promise.assets/image-20221020135924033.png)
+
+promiseStatus是内置的我们不能直接去对这个属性做操作
+
+​	
+
+# 11 promise对象结果值属性介绍
+
+【重点】属性：promiseResult
+
+![image-20221020140840511](Promise.assets/image-20221020140840511.png)
+
+resolve和reject可以对promiseResult的值进行赋值和修改 别人是不可以的
+
+promiseResult保存的是我们异步任务成功或失败的结果
+
+![image-20221020140912432](Promise.assets/image-20221020140912432.png)
+
+​	
+
+# 12 Promise工作流程
+
+![image-20221020141226194](Promise.assets/image-20221020141226194.png)
+
+then()方法返回的也是一个promise对象 后面会讲

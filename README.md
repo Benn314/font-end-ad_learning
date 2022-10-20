@@ -33,3 +33,9 @@ Xxxxxx
 6. [vue响应式](https://www.bilibili.com/video/BV1G54y1s7xV?spm_id_from=333.999.0.0)
 7. [AST](https://www.bilibili.com/video/BV1GK4y1W7fi?spm_id_from=333.999.0.0)
 8. [vue指令生命周期](https://www.bilibili.com/video/BV1Av411478T?spm_id_from=333.999.0.0)
+
+​	
+
+Promise-章节-文件分类
+
+![image-20221020131032601](README.assets/image-20221020131032601.png)
