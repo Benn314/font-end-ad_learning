@@ -736,3 +736,42 @@ result指定promise状态先执行还是指定回调then/catch先执行？
 ![image-20221020235834926](Promise.assets/image-20221020235834926.png)
 
 原理就是then的返回结果也是一个promise对象
+
+**5-promise如何串联多个任务.html**
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Promise关键问题 - 如何串联多个任务</title>
+</head>
+<body>
+  <script>
+    let p = new Promise((resolve,reject)=>{
+      setTimeout(()=>{
+        resolve('OK');
+      },1000);
+    });
+
+    p.then(value=>{
+      return new Promise((resolve,reject)=>{
+        resolve("success"); // 上面状态是resolve 下面reject的回调不写没影响
+      }); //这里return一个Promise对象 所以可以再进行then 链式操作
+    }).then(value=>{ //这里then回调函数没写return 没有返回值 那么返回值就是undefined 又因为undefined不是一个成功的promise类型对象 所以这个then它的返回结果就是一个成功的Promise对象 且成功的结果就是返回的结果 结果值为undefined
+      console.log(value); //success
+    }).then(value=>{
+      console.log(value);
+    })
+  </script>
+</body>
+</html>
+```
+
+​	
+
+# 23 Promise关键问题-异常穿透
+
+![image-20221021080404961](Promise.assets/image-20221021080404961.png)

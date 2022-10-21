@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Promise关键问题 - 如何串联多个任务</title>
+</head>
+<body>
+  <script>
+    let p = new Promise((resolve,reject)=>{
+      setTimeout(()=>{
+        resolve('OK');
+        // reject('Err');
+      },1000);
+    });
+
+    p.then(value=>{
+      // console.log(111); // 这里打印输出OK 但是没有返回值所以 p.then 的结果是undefined 为 非Promise对象 属于resolve 所以以此类推 下面两个then也都会调用输出结果
+      throw '失败啦！'
+    }).then(value=>{ 
+      console.log(222); 
+    }).then(value=>{
+      console.log(333);
+    })
+    .catch(reason=>{ //喜欢写catch只是因为它能比then少写一个函数 | catch不写返回值 返回的就是undefined 也就是成功的Promise对象
+      console.warn(reason);
+      console.warn(111);
+      // return reason;
+    })
+    // .then(value=>{ 
+    //   console.log(444);
+    // },reject=>{
+    //   console.log('-------');
+    //   console.log(555);
+    //   console.log(reject);
+    //   console.log('-------');
+    // });
+
+    // 测试catch
+    // p.catch(reason=>{ //喜欢写catch只是因为它能比then少写一个函数 | catch不写返回值 返回的就是undefined 也就是成功的Promise对象
+    //   // console.warn(reason);
+    //   return new Promise((resolve,reject)=>{
+    //   // setTimeout(()=>{
+    //     // resolve('OK');
+    //     reject('Err');
+    //   // },1000);
+    // })
+    // })
+    // .then(value=>{ 
+    //   console.log(value);
+    // },reject=>{
+    //   console.log('-------');
+    //   console.log(555);
+    //   console.log(reject);
+    //   console.log('-------');
+    // });
+  </script>
+</body>
+</html>
