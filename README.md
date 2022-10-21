@@ -14,11 +14,11 @@ Xxxxxx
 
 今日小结
 1. 学习了xxx
-2.【Promise】看到了第xx集
+2.【TS】看到了第xx集
 3. xxx
 
 明日计划
-1.【Promise】学到第xx集
+1.【TS】学到第xx集
 ```
 
 ​	
