@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Promise关键问题 - 如何串联多个任务</title>
+</head>
+<body>
+  <script>
+    let p = new Promise((resolve,reject)=>{
+      setTimeout(()=>{
+        resolve('OK');
+        // reject('Err');
+      },1000);
+    });
+
+    p.then(value=>{
+      console.log(111); 
+      // 有且只有一个方式
+      return new Promise(()=>{}); //改变为pending状态 下面状态不匹配便不执行
+    }).then(value=>{ 
+      console.log(222); 
+    }).then(value=>{
+      console.log(333);
+    })
+    .catch(reason=>{ 
+      console.warn(reason);
+    })
+    // });
+  </script>
+</body>
+</html>
