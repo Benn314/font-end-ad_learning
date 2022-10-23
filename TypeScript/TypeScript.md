@@ -339,3 +339,143 @@ k = 2;
 # 05 TS编译选项（1）
 
 `tsc app.ts -w` 这里的参数 `-w` 是watch 我们的ts编译器它会自动的去监视我们的文件变化 进行重新自动编译
+
+![image-20221022183407490](TypeScript.assets/image-20221022183407490.png)
+
+开启监视模式
+
+![image-20221022183732261](TypeScript.assets/image-20221022183732261.png)
+
+使用tsc可以编译我们项目所有ts文件 但我们首先需要有一个 `tsconfig.json` 来配置我们一些相关信息 只要有tsconfig.json 我们的tsc命令就能用 即使tsconfig.json里面什么都没有 这时候我们用 tsc -w 可以监视所有文件 这时候我们就不需要再一个个文件手动去单独执行命令编译了
+
+通常的一些json文件是不能写注释的 但我们ts的json文件里可以写注释
+
+files是一个文件一个文件列出来 通常用在比较小的文件
+
+![image-20221023105252173](TypeScript.assets/image-20221023105252173.png)
+
+compilerOptions是重点 下节课讲
+
+​	
+
+# 06 TS编译选项（2）
+
+从es6起新增了module模块化的规范 导致自从模块化规范每年都在增多 需要指定用什么模块化规范 
+
+ts很聪明 import { xx } from xxx 只导入不使用 ts编辑器是不会理睬的
+
+**lib**：一般情况下 我们不需要改 如果代码部署在浏览器的环境里运行的 而是在node.js里运行的 它里面没有dom那你可以去改一下 如果是我们正常的在前端在浏览器当中去运行代码 这里lib我们是不需要去设置的
+
+如果想要把多个模块化规范的文件合并成一个文件 必须是amd或是system的规范
+
+![image-20221023115237581](TypeScript.assets/image-20221023115237581.png)
+
+outFile用得不多 一般我们这种东西要用的话 都会结合一些打包工具去做 实际上这种事都应该是交给打包工具去给我们做 所以后边会介绍怎么去结合打包工具实现这个功能 outFile了解一下就行
+
+`target` 和 `module` 是必用的
+
+**tsconfig.json**
+
+```json
+{
+/*
+  tsconfig.json是ts编译器的配置文件，ts编译器可以根据它的信息来对代码进行编译
+    "include" 用来指定哪些ts文件需要被编译
+      路径：** 表示任意目录
+            * 表示任意文件
+    "exclude" 不需要被编译的文件目录
+        默认值：["node_modules", "bower_components", "jspm_packages"]
+
+*/
+  "include": [
+    "./src/**/*" // 表示src下的任意目录任意文件都会被编译
+  ],
+//  "exclude": [
+//    "./src/hello/**/*"
+//  ]
+
+  /*
+    compilerOptions 编译器的选项 （最重要的东西）
+  */
+  "compilerOptions": {
+
+    // target 用来指定ts被编译为的ES的版本
+    // 'es3', 'es5', 'es6', 'es2015', 'es2016', 'es2017', 'es2018', 'es2019', 'es2020', 'esnext'
+    "target": "es2015",
+    // module 指定要使用的模块化的规范 从es6起新增了module模块化的规范 导致自从模块化规范每年都在增多 需要指定用什么模块化规范 ts很聪明 import { xx } from xxx 只导入不使用 ts编辑器是不会理睬的
+    // 'none', 'commonjs', 'amd', 'system', 'umd', 'es6', 'es2015', 'es2020', 'esnext'
+    "module": "es2015",
+    // lib用来指定项目中要使用的库
+    //'es5', 'es6', 'es2015', 'es7', 'es2016', 'es2017', 'es
+    //2018', 'es2019', 'es2020', 'esnext', 'dom', 'dom.iterable', 'webworker', 'webworker.importscripts', 'webworker.iterable', 'scri
+    //pthost', 'es2015.core', 'es2015.collection', 'es2015.generator', 'es2015.iterable', 'es2015.promise', 'es2015.proxy', 'es2015.r
+    //eflect', 'es2015.symbol', 'es2015.symbol.wellknown', 'es2016.array.include', 'es2017.object', 'es2017.sharedmemory', 'es2017.st
+    //ring', 'es2017.intl', 'es2017.typedarrays', 'es2018.asyncgenerator', 'es2018.asynciterable', 'es2018.intl', 'es2018.promise', '
+    //es2018.regexp', 'es2019.array', 'es2019.object', 'es2019.string', 'es2019.symbol', 'es2020.bigint', 'es2020.promise', 'es2020.s
+    //haredmemory', 'es2020.string', 'es2020.symbol.wellknown', 'es2020.intl', 'esnext.array', 'esnext.symbol', 'esnext.asynciterable
+    //', 'esnext.intl', 'esnext.bigint', 'esnext.string', 'esnext.promise', 'esnext.weakref'
+//    "lib": ["es6", "dom"]
+
+
+    // outDir 用来指定编译后文件所在的目录 这样就会让生成的js文件和我们的ts文件分离开来
+    "outDir": "./dist",
+
+    // 将代码合并为一个文件
+    // 设置outFile后，所有的全局作用域中的代码会合并到同一个文件中
+    //"outFile": "./dist/app.js" // 生成的代码合并到dist目录下的app.js里
+
+    // 是否对js文件进行编译，默认是false
+//    "allowJs": true,
+    // 是否检查js代码是否符合语法规范，默认是false
+//    "checkJs": true,
+    // 是否移除注释
+    "removeComments": true,
+    // 不生成编译后的文件
+    "noEmit": false,
+
+
+    // 当有错误时不生成编译后的文件
+    "noEmitOnError": true,
+
+    // 所有严格检查的总开关
+    "strict": true,
+
+    // 用来设置编译后的文件是否使用严格模式，默认false
+    "alwaysStrict": true,
+
+    // 不允许隐式的any类型
+    "noImplicitAny": true,
+
+    // 不允许不明确类型的this
+    "noImplicitThis": true,
+
+    // 严格的检查空值
+    "strictNullChecks": true
+
+
+  }
+}
+```
+
+​	
+
+# 07 TS编译选项（3）
+
+# 08 TS编译选项（4）
+
+下面讲的是跟语法检查相关的选项
+
+![image-20221023143137688](TypeScript.assets/image-20221023143137688.png)
+
+当我们js文件里有export、import模块的时候 它实际上就已经默认就在严格模式下了 所以才没看到生成的 `"use strict";`
+
+![image-20221023143820641](TypeScript.assets/image-20221023143820641.png)
+
+把this指定好是谁的 就可以用了
+
+![image-20221023150546936](TypeScript.assets/image-20221023150546936.png)
+
+​	
+
+# 09 使用webpack打包ts代码（1）
+
