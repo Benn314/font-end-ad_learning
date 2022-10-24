@@ -20,7 +20,7 @@ module.exports = {
         // 打包后文件的文件
         filename: "bundle.js",
 
-        // 告诉webpack不使用箭头
+        // 告诉webpack不使用箭头函数 arrowFunction
         environment:{
             arrowFunction: false
         }
@@ -39,7 +39,7 @@ module.exports = {
                      {
                          // 指定加载器
                          loader:"babel-loader",
-                         // 设置babel
+                         // 设置babel(配置信息)
                          options: {
                              // 设置预定义的环境
                              presets:[
