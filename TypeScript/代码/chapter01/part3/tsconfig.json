@@ -1,0 +1,10 @@
+{
+  "include": [
+    "./src/**/*" // 表示src下的任意目录任意文件都会被编译
+  ],
+  "compilerOptions": {
+    "module": "ES2015",
+    "target": "ES2015",
+    "strict": true
+  }
+}
