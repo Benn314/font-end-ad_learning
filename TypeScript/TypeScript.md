@@ -1046,3 +1046,226 @@ const mc = new MyClass<string>('孙悟空');
 
 # 21 练习-项目搭建
 
+在webstorm尽量避免使用cnpm下载文件 可能是镜像文件他文件比较多 项目结构比较乱 在左下角会显示文件一直在加载（持续转圈ing）
+
+**vulnerabilities 漏洞**
+
+有一些CSS3的样式在旧浏览器不支持或者需要加前缀才能使用 但我们自己手动添加又会很麻烦 那么就需要post-css插件来帮我们转换了 使得新版本的css语法能尽量去兼容旧版本的浏览器 使得样式有一个更广的应用范围
+
+postcss-preset-env是一个预制环境 所以这个插件的话表示我们post-css里边给我们提供这个浏览器的预置环境 你想让你的代码兼容哪些浏览器 他在这个环境里可以给你去一些设置 写完以后直接回车自动取安装 装完不着急 还要改我们的配置文件 它实际上引入的就是一个加载器
+
+由于我们本项目没有涉及到外部资源（例如图片）所以我们现在还停留在这个js css html上 有外部资源我们需要再引入一些加载外部资源的一个加载器 套路都是固定的 所以这种东西千万不要觉得麻烦 觉得难 套路就那么些 熟能生巧
+
+在package.json所在根目录用npm i 就可以下载到项目所需的依赖
+
+​	
+
+# 22 练习-项目界面
+
+用flex开启弹性盒模型简单点（建议去看官方文档！或详细视频）用float浮动也可以
+
+​	
+
+# 23 练习-完成Food类
+
+我们需要IE11和IE10 可以看到IE10报错了 原因是使用了const 不是babel和ts的问题 我们只需要在webpackconfig.js的文件中的environment禁用全局const 转换为var就可以了
+
+![image-20221025162909886](TypeScript.assets/image-20221025162909886.png)
+
+![image-20221025163455878](TypeScript.assets/image-20221025163455878.png)
+
+​	
+
+# 24 练习-完成ScorePanel类
+
+代码实现的时候尽量避免字面量（也就是纯数字）会降低可扩展性 修改只能通过修改源码 可以设置一个变量来接收
+
+![image-20221025182417764](TypeScript.assets/image-20221025182417764.png)
+
+​	
+
+# 25 练习-初步完成Snake类
+
+![image-20221025183126905](TypeScript.assets/image-20221025183126905.png)
+
+可以用getElementByTagName来获取一个div里的边的所有div 它返回的是collection 这样就解决问题了
+
+![image-20221025183405513](TypeScript.assets/image-20221025183405513.png)
+
+​	
+
+# 26 练习-GameControl键盘事件
+
+难点就在于对于this的理解和bind函数的理解 记得去补一下功课
+
+![image-20221025203257167](TypeScript.assets/image-20221025203257167.png)
+
+![image-20221025203454615](TypeScript.assets/image-20221025203454615.png)
+
+​	
+
+# 27 练习-GameControl使蛇移动
+
+**GameControl.ts**
+
+```ts
+// 引入其他的类
+import Snake from "./Snake";
+import Food from "./Food";
+import ScorePanel from "./ScorePanel";
+
+// 游戏控制器，控制其他的所有类
+class GameControl {
+    //定义三个属性
+    // 蛇
+    snake: Snake;
+    // 食物
+    food: Food;
+    // 记分牌
+    scorePanel: ScorePanel;
+    // 创建一个属性来存储蛇的移动方向（也就是按键的方向）
+    direction: string = '';
+    // 创建一个属性用来记录游戏是否结束
+    isLive = true;
+
+    constructor() {
+        this.snake = new Snake();
+        this.food = new Food();
+        this.scorePanel = new ScorePanel(10,2);
+
+        this.init();
+    }
+
+    // 游戏的初始化方法，调用后游戏即开始
+    init() {
+        // 绑定键盘按键按下的事件
+        document.addEventListener('keydown', this.keydownHandler.bind(this)); //bind的作用是创建一个新函数 然后把this绑定给这个新函数 所以this.keydownHandler.bind(this)就一直是我们gameControl的对象
+        // 调用run方法，使蛇移动
+        this.run();
+    }
+
+    /*
+        chrome： IE：
+    *   ArrowUp  Up
+        ArrowDown Down
+        ArrowLeft Left
+        ArrowRight Right
+    * */
+
+    // 创建一个键盘按下的响应函数
+    keydownHandler(event: KeyboardEvent) {
+        // 需要检查event.key的值是否合法（用户是否按了正确的按键）
+        // 修改direction属性
+        this.direction = event.key; //键盘按键对应的key值就是按键名称吗？
+    }
+
+    // 创建一个控制蛇移动的方法
+    run() {
+        /*
+        *   根据方向（this.direction）来使蛇的位置改变
+        *       向上 top 减少
+        *       向下 top 增加
+        *       向左  left 减少
+        *       向右  left 增加
+        * */
+        // 获取蛇现在坐标
+        let X = this.snake.X;
+        let Y = this.snake.Y;
+
+
+        // 根据按键方向来修改X值和Y值
+        switch (this.direction) {
+            case "ArrowUp":
+            case "Up":
+                // 向上移动 top 减少
+                Y -= 10;
+                break;
+            case "ArrowDown":
+            case "Down":
+                // 向下移动 top 增加
+                Y += 10;
+                break;
+            case "ArrowLeft":
+            case "Left":
+                // 向左移动 left 减少
+                X -= 10;
+                break;
+            case "ArrowRight":
+            case "Right":
+                // 向右移动 left 增加
+                X += 10;
+                break;
+        }
+
+        // 检查蛇是否吃到了食物
+       this.checkEat(X, Y);
+
+        //修改蛇的X和Y值
+        try{
+            this.snake.X = X;
+            this.snake.Y = Y;
+        }catch (e){
+            // 进入到catch，说明出现了异常，游戏结束，弹出一个提示信息
+            alert(e.message+' GAME OVER!');
+            // 将isLive设置为false
+            this.isLive = false;
+        }
+
+
+        // 开启一个定时调用 记得调用bind 获取的才是gameControl对象
+        // 当我游戏还没结束的时候（this.isLive==true）才开启定时器
+        this.isLive && setTimeout(this.run.bind(this), 300 -(this.scorePanel.level-1)*30);
+
+    }
+
+    // 定义一个方法，用来检查蛇是否吃到食物
+    checkEat(X: number, Y: number){
+        if(X === this.food.X && Y === this.food.Y){
+            // 食物的位置要进行重置
+            this.food.change();
+            // 分数增加
+            this.scorePanel.addScore();
+            // 蛇要增加一节
+            this.snake.addBody();
+        }
+    }
+
+
+}
+
+export default GameControl;
+```
+
+​	
+
+# 28 练习 蛇撞墙和吃食检测
+
+秉从谁的事谁处理的原则 蛇撞墙是蛇自己的事 让它自己处理 所以函数方法写在蛇这个类中
+
+![image-20221025205906195](TypeScript.assets/image-20221025205906195.png)
+
+![image-20221025210430577](TypeScript.assets/image-20221025210430577.png)
+
+​	
+
+# 29 练习-身体的移动
+
+![image-20221025211310855](TypeScript.assets/image-20221025211310855.png)
+
+要从后往前（蛇头）改 不然旧位置旧找不到了 比如第三节去第二节的位置 而如果先改第二节 那么第二节先改去了第一节的位置 显然第三节改到第一节的位置是不合理的
+
+如果蛇头通过方向键回到第二个身体div位置那么就是调头 这种情况是不允许的（前提是得先判断有没有第二个身体）
+
+![image-20221025214740935](TypeScript.assets/image-20221025214740935.png)
+
+![image-20221025222013080](TypeScript.assets/image-20221025222013080.png)
+
+垂直方向亦是如此
+
+![image-20221025224030536](TypeScript.assets/image-20221025224030536.png)
+
+因为设置的keyborad是通过方向键改变方向 其他按键按下的话 贪吃蛇运动会被暂停 再次按下方向的时候 游戏继续
+
+除非蛇撞墙或撞自己 才是游戏终止
+
+> 至此 TS学习告一段落 入门完毕~ 源代码已上传GitHub
