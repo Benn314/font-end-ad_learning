@@ -6,3 +6,4 @@
 /TypeScript/代码/chapter02/part2/node_modules
 /TypeScript/笔记
 *.accelerate
+.vscode
