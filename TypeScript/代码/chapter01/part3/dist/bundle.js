@@ -16,7 +16,7 @@
   \**********************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _m1__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./m1 */ \"./src/m1.ts\");\n\r\nfunction sum(a, b) {\r\n    return a + b;\r\n}\r\n// var obj = {name:\"孙悟空\", age:33};\r\n// console.log(obj);\r\n// obj.age = 18;\r\n// console.log(obj);\r\nconsole.log(sum(123, 456));\r\nconsole.log('哈哈');\r\nconsole.log(_m1__WEBPACK_IMPORTED_MODULE_0__.hi);\r\n// let fn = (a: number, b: number) => a + b;\r\n// fn(123 , 456);\r\n// fn(77, 22);\r\n\n\n//# sourceURL=webpack://part3/./src/index.ts?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _m1__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./m1 */ \"./src/m1.ts\");\n\nfunction sum(a, b) {\n  return a + b;\n}\n// var obj = {name:\"孙悟空\", age:33};\n// console.log(obj);\n// obj.age = 18;\n// console.log(obj);\nconsole.log(sum(123, 456));\nconsole.log('哈哈');\nconsole.log(_m1__WEBPACK_IMPORTED_MODULE_0__.hi);\n// let fn = (a: number, b: number) => a + b;\n// fn(123 , 456);\n// fn(77, 22);\n\n//# sourceURL=webpack://part3/./src/index.ts?");
 
 /***/ }),
 
@@ -26,7 +26,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _m1_
   \*******************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"hi\": function() { return /* binding */ hi; }\n/* harmony export */ });\nconst hi = '你好';\r\n\n\n//# sourceURL=webpack://part3/./src/m1.ts?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"hi\": function() { return /* binding */ hi; }\n/* harmony export */ });\nvar hi = '你好';\n\n//# sourceURL=webpack://part3/./src/m1.ts?");
 
 /***/ })
 

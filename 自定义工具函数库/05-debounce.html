@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>防抖测试</title>
+  <script src="05-debounce.js"></script>
+</head>
+<body>
+  <input type="text">
+  <script>
+    let input = document.querySelector('input');
+
+    // 当键盘按下时 会有对应的keyCode返回
+    // 这里自己理解错了一点 太久没看js给忘了 以为是函数的返回结果返回给onkeydown 实际上onkeydown才是这个函数的函数名 所以按下键盘时便是执行函数 自然就会在控制台打印结果
+    // input.onkeydown = function(e){
+    //   console.log(e.keyCode);
+    // }
+
+    input.onkeydown = debounce(function(e){
+      console.log(e.keyCode);
+    },1000);
+    
+  </script>
+  
+</body>
+</html>
