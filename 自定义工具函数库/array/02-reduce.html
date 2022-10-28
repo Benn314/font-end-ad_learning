@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>数组API测试</title>
+    <script src="02-reduce.js"></script>
+  </head>
+  <body>
+    <script>
+      // 声明一个数组
+      const arr = [1, 2, 3, 4, 5];
+
+      // 系统内置
+      // reduce()有三个参数 第一个是数组 第二个是回调 第三个是初始值
+      // let result = arr.reduce(function (res, value) {
+      //   return res + value;
+      // }, 0);
+
+      // console.log(result);
+
+      // 自定义
+      let result = reduce(
+        arr,
+        function (res, value) {
+          return res + value;
+        },
+        10
+      );
+
+      console.log(result);
+    </script>
+  </body>
+</html>

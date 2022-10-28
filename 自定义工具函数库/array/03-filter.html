@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>数组API测试</title>
+    <script src="03-filter.js"></script>
+  </head>
+  <body>
+    <script>
+      // 声明一个数组
+      const arr = [1, 2, 3, 4, 5];
+
+      // filter 内置
+      // const result = arr.filter((item) => item % 2 === 1);
+
+      // filter 自定义
+      const result = arr.filter((item) => item % 2 === 0);
+      console.log(result);
+    </script>
+  </body>
+</html>
