@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>数组API测试</title>
+    <script src="04-find.js"></script>
+  </head>
+  <body>
+    <script>
+      // 声明一个数组
+      const arr = [1, 2, 3, 4, 2050, 5, 1024];
+
+      //find 内置
+      // const result = arr.find((item) => {
+      //   return item > 1000;
+      // });
+
+      const result = find(arr, (item, index) => item > 10000);
+      console.log(result);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="06-every和some.js"></script>
+  </head>
+  <body>
+    <script>
+      // 声明一个数组
+      const arr = [1, 2, 3, 4, 2050, 5, 1024];
+
+      // const result = arr.every((item) => item > 0);
+      // const result = arr.some((item) => item > 20000);
+
+      // const result = every(arr, (item, index) => {
+      //   return item > 0;
+      // });
+
+      const result = some(arr, (item, index) => {
+        return item < 0;
+      });
+      console.log(result);
+    </script>
+  </body>
+</html>
