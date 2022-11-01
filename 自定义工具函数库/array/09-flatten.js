@@ -20,3 +20,18 @@ function flatten1(arr) {
   // 返回结果
   return result;
 }
+
+function flatten2(arr) {
+  // 声明数组 我们希望对一个新数组进行操作 而不是对原数组进行操作
+  let result = [...arr];
+  //循环判断
+  while (result.some(item => Array.isArray(item))) {
+    // 循环前：[1, 2, [3, 4, [5, 6]], 7]
+    // result = [].concat([1, 2, [3, 4, [5, 6]], 7]); // 第一次循环：[1, 2, 3, 4, [5, 6], 7]
+    // result = [].concat([1, 2, 3, 4, [5, 6], 7]); // 第二次循环：[1, 2, 3, 4, 5, 6, 7]
+    result = [].concat(...result);
+    console.log(result); // 我们还可以看中间展开的结果值
+  }
+  // console.log(result);
+  return result;
+}
