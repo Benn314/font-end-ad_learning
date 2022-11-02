@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>创建对象测试</title>
+    <script src="01-newInstance.js"></script>
+  </head>
+  <body>
+    <script>
+      function Person(name, age) {
+        this.name = name;
+        this.age = age;
+
+        // return { a: 100 };
+        // return [];
+        // return function () {};
+
+        // 如果返回的是非对象数据类型的值 那么这个new的返回结果就是那个新创建的对象
+        // return 'im OK'; // Person {name: undefined, age: undefined}
+      }
+
+      // 调用 newInstance 函数创建对象
+      let obj = newInstance(Person, '张三', 18);
+      console.log(obj);
+
+      // console.log(new Person());
+    </script>
+  </body>
+</html>

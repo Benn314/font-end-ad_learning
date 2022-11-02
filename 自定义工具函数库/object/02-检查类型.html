@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>检查类型</title>
+    <script src="02-myInstanceOf.js"></script>
+  </head>
+  <body>
+    <script>
+      // 声明一个构造函数
+      function Person() {}
+
+      let p = new Person();
+
+      // 检测
+      // console.log(p instanceof Person);
+
+      // console.log(myInstanceOf(p, Person));
+      // console.log(myInstanceOf(p, Object)); // 因为Object是所有对象最上层的类 所以它的显式原型都在对象的原型链上边
+      // console.log(myInstanceOf(Person, Function));
+      console.log(myInstanceOf(p, Function)); //false 原因：不是由函数创建 而是由Person创建而来的
+    </script>
+  </body>
+</html>
