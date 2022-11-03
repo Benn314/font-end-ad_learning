@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>深拷贝测试</title>
+    <script src="04-clone.js"></script>
+  </head>
+  <body>
+    <script>
+      const obj = {
+        a: 1,
+        b: ['e', 'f', 'g'],
+        c: { h: 20 },
+        // JSON不能克隆方法
+        d: function () {},
+      };
+      // 4. 循环效率问题优化
+      const result = deepClone4(obj);
+
+      // 3. 解决循环引用问题
+      // const result = deepClone3(obj);
+
+      // 2. 递归拷贝
+      // const result = deepClone2(obj);
+
+      // 循环引用（也不能实现深拷贝）
+      obj.b.push(obj.c);
+      obj.c.j = obj.b;
+
+      //深拷贝
+      // const result = deepClone1(obj);
+
+      // 修改新数据的属性值
+      // result.c.h = 314;
+
+      console.log(obj);
+      console.log(result);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>浅拷贝测试</title>
+    <script src="04-clone.js"></script>
+  </head>
+  <body>
+    <script>
+      const obj = { x: 'abc', y: { m: 1 } };
+      // const obj = [1, 2, 3, 4];
+      // const result = clone1(obj);
+      const result = clone2(obj);
+
+      // 修改新数据中某个引用类型的值
+      result.y.m = 3; // 因为还是对象直接赋值 所以赋值的还是地址
+
+      console.log(obj);
+      console.log(result);
+      console.log(obj === result); // 我们这里是新建了容器result 所以返回值为false
+    </script>
+  </body>
+</html>
