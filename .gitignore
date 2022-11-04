@@ -7,5 +7,7 @@
 /TypeScript/笔记
 *.accelerate
 .vscode
+node_modules
+dist
 
 /自定义工具函数库/代码
