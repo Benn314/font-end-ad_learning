@@ -123,3 +123,72 @@ dom方法 说的就是document方法嘛
 
 # 04 反引号法
 
+纯DOM法解析比join()法（字符串解析）要快 不过现在浏览器的性能已经不在乎那点速度差距了
+
+由于字符串中不能有换行符 所以采用了数组校验的方法 然后es6就推出了换行符
+
+mustache是世界上最早的模板引擎
+
+**03-数据变为视图-ES6的反引号法.html**
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <!-- <li>
+      <div class="hd"></div>
+      <div class="bd">
+        <p>姓名:</p>
+        <p>年龄:</p>
+        <p>性别:</p>
+      </div>
+    </li> -->
+    <ul id="list"></ul>
+
+    <script>
+      var arr = [
+        { name: '小明', age: 12, sex: '男' },
+        { name: '小红', age: 11, sex: '女' },
+        { name: '小强', age: 13, sex: '男' },
+      ];
+
+      var list = document.getElementById('list');
+
+      // 遍历arr数组 每遍历一项 就以字符串的视角将HTML字符串添加到list中
+      for (var i = 0; i < arr.length; i++) {
+        list.innerHTML += `
+          <li>
+            <div class="hd">${arr[i].name}的基本信息</div>
+            <div class="bd">
+              <p>姓名: ${arr[i].name}</p>
+              <p>年龄: ${arr[i].age}</p>
+              <p>性别: ${arr[i].sex}</p>
+            </div>
+          </li>
+        `;
+      }
+    </script>
+  </body>
+</html>
+
+```
+
+​	
+
+# 05 mustache的基本语法
+
+![image-20221105120238207](mustache.assets/image-20221105120238207.png)
+
+![image-20221105120409500](mustache.assets/image-20221105120409500.png)
+
+![image-20221105140603216](mustache.assets/image-20221105140603216.png)
+
+![image-20221105143740892](mustache.assets/image-20221105143740892.png)
+
+![image-20221105144708566](mustache.assets/image-20221105144708566.png)
