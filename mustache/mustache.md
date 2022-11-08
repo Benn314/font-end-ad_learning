@@ -499,3 +499,147 @@ index.html改变不能行，必须得是js文件修改才能热更新
 js文件之间可以export引包
 
 全局不用装webpack和webpack-dev-server 如果它报错 就在全局电脑也按需要的版本号装一下就行
+
+webpack.config.js文件的内容也都注释清楚了 就是在8080端口提供了一个静态服务 它能把3w文件夹的东西静态的显示出来 然后可以把js文件虚拟打包到虚拟路径中 所以这个事情还是比较简单的
+
+​	
+
+# 09 手写实现Scanner类
+
+![image-20221108124507983](mustache.assets/image-20221108124507983.png)
+
+![image-20221108125706423](mustache.assets/image-20221108125706423.png)
+
+scan和scanUntil方法解析图，scan是没用的，scanUntil是有用的，scanUntil路过的信息都会收集，scan不会（而是跳过）
+
+![image-20221108131108556](mustache.assets/image-20221108131108556.png)
+
+![image-20221108140137217](mustache.assets/image-20221108140137217.png)
+
+**Scanner.js**
+
+```js
+/**
+ * 扫描器类
+ */
+export default class Scanner {
+  constructor(templateStr) {
+    // console.log(templateStr);
+    // 将模板字符串写到实例身上
+    this.templateStr = templateStr;
+    // 指针
+    this.pos = 0;
+    // 尾巴（指针后面未扫描的部分(包括指针当前的那一位),一开始就是模板字符串的原文）这里设计还是很精妙的
+    this.tail = templateStr;
+  }
+
+  // 功能弱 就是走过指定内容 没有返回值
+  scan(tag) {
+    if (this.tail.indexOf(tag) == 0) { // 保险起见 加个if语句比较好
+      // tag有多长 比如{{长度是2 就让指针后移多少位
+      this.pos += tag.length;
+      // 尾巴也要变 改变尾巴为从当前指针这个字符开始 到最后的全部字符
+      this.tail = this.templateStr.substring(this.pos);
+    }
+  }
+
+  // 让指针进行扫描 直到遇见指定内容结束 并且能够返回结束之前路过的文字
+  scanUntil(stopTag) {
+    // 记录一下执行本方法的时候pos值
+    const pos_backup = this.pos;
+    // 当尾巴的开头不是stopTag的时候 就说明还没有扫描到stopTag
+    // 写&&很有必要 因为防止找不到 那么寻找到最后也要停止下来
+    // eos()写在前面效率性能更高
+    while (!this.eos() && this.tail.indexOf(stopTag) != 0) { // 这里等于0才是寻找到 -1是未寻找到 不写&& this.pos<this.templateStr.length容易死循环
+      this.pos++;
+      // 改变尾巴为从当前指针这个字符开始 到最后的全部字符
+      this.tail = this.templateStr.substring(this.pos);
+    }
+
+    return this.templateStr.substring(pos_backup, this.pos); // 左闭右开区间 不包括this.pos索引位置
+  }
+
+  // 指针是否到头 返回布尔值 end of string
+  eos() {
+    return this.pos >= this.templateStr.length;
+  }
+}
+```
+
+**index.js**
+
+```js
+import Scanner from './Scanner'
+
+// 全局提供SSG_TemplateEngine对象
+window.SSG_TemplateEngine = {
+  // 渲染方法
+  render(templateStr, data) {
+
+    /*
+      实例化一个扫描器 构造函数提供一个参数 这个参数就是模板字符串
+      也就是说这个扫描器就是针对这个模板字符串工作的
+     */
+    var scanner = new Scanner(templateStr);
+    // console.log(templateStr);
+
+    // // 测试scanUntil
+    // var words = scanner.scanUntil('{{');
+    // console.log(scanner.pos);
+    // console.log(words);
+    // scanner.scan('{{');
+    // console.log(scanner.pos);
+
+    var word;
+    // while (scanner.pos != templateStr.length) { 改写成下面的形式
+    // 当scanner没有到头
+    while (!scanner.eos()) {
+      word = scanner.scanUntil('{{');
+      console.log(word);
+      scanner.scan('{{');
+
+      word = scanner.scanUntil('}}');
+      console.log(word);
+      scanner.scan('}}');
+
+    }
+  }
+}
+```
+
+**index.html**
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>我是index.html 你好！！</h1>
+    <h2>我是index.html 你好！！</h2>
+    <h3>我是index.html 你好！！</h3>
+
+    <!-- 它是一个虚拟打包路径 所以不会真正生成bundle.js -->
+    <script src="/xuni/bundle.js"></script>
+
+    <script>
+      // 模板字符串
+      var templateStr = '我买了一个{{thing}}，好{{mood}}啊';
+      // 数据
+      var data = {};
+      // 调用render
+      SSG_TemplateEngine.render(templateStr, data);
+    </script>
+  </body>
+</html>
+
+```
+
+​	
+
+# 10 手写将HTML变为tokens
+
