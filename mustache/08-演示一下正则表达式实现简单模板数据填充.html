@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      // console.log('我的妹妹叫凯茵，我的妹妹会变身！'.replace('我', '你')); // 只替换第一个"我"
+      // // 使用正则替换所有"我"
+      // console.log('我的妹妹叫凯茵，我的妹妹会变身！'.replace(/我/g, '你'));
+
+      var templateStr = '<h1>我买了一个{{thing}}，好{{mood}}</h1>';
+
+      var data = {
+        thing: '华为手机',
+        mood: '开心',
+      };
+
+      // console.log(
+      //   templateStr.replace(/\{\{(\w+)\}\}/g, function (findStr, $1, index) {
+      //     // console.log('a=' + a, 'b=' + b, 'c=' + c);
+      //     // console.log($1);
+      //     return data[$1]; // $1是变量，所以不能用.的方式访问 需要用[]
+      //   })
+      // );
+
+      /**
+       * 最简单的模板引擎的实现机理 利用的是正则表达式中的replace()方法
+       * replace()的第二个参数可以是一个函数 这个函数提供捕获的东西的参数 就是$1
+       * 结合data对象 即可进行智能的替换
+       */
+      function render(templateStr, data) {
+        return templateStr.replace(
+          /\{\{(\w+)\}\}/g,
+          function (findStr, $1, index) {
+            return data[$1]; // $1是变量，所以不能用.的方式访问 需要用[]
+          }
+        );
+      }
+
+      var result = render(templateStr, data);
+      console.log(result);
+    </script>
+  </body>
+</html>

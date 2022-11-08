@@ -9,31 +9,31 @@
   <body>
     <div id="container"></div>
     <script src="jslib/mustache.js"></script>
-    <!-- <script src="https://cdn.bootcdn.net/ajax/libs/mustache.js/4.0.1/mustache.js"></script> -->
     <script>
-      // console.log(Mustache);
-      // #arr 循环开始 /arr 循环结束
-      // var templateStr = `
-      //   <h1>我买了一个{{thing}}, 好{{mood}}啊</h1>
-      // `;
-
-      // . 表示这个项本身（没有它本身没有name也没有key）
       var templateStr = `
         <ul>
           {{#arr}}
-            <li>{{.}}</li>
+            <li>
+              {{name}}的爱好是：
+              <ol>
+                {{#hobbies}}
+                  <li>{{.}}</li>
+                {{/hobbies}}
+              </ol>
+            </li>
           {{/arr}}
         </ul>
       `;
 
       var data = {
-        thing: '华为手机',
-        mood: '开心',
-        arr: ['A', 'B', 'C'],
+        arr: [
+          { name: '小明', age: 12, hobbies: ['游泳', '羽毛球'] },
+          { name: '小红', age: 11, hobbies: ['编程', '写作文', '看报纸'] },
+          { name: '小强', age: 13, hobbies: ['打台球'] },
+        ],
       };
 
       var domStr = Mustache.render(templateStr, data);
-      // console.log(domStr);
       var container = document.getElementById('container');
       container.innerHTML = domStr;
     </script>
