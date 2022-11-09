@@ -760,3 +760,208 @@ export default function nestedTokens(tokens) {
 
 # 12 手写将tokens注入数据
 
+#标记的tokens，需要递归处理它的下标为2的小数组
+
+![image-20221109134140235](mustache.assets/image-20221109134140235.png)
+
+下面的renderTemplate.js是初代版本 只能解决非嵌套的对象(JS不认识 . 符号 我们需要进行函数封装解析(lookup函数) )，并且对#和/还没有解决注入
+
+**renderTemplate.js**
+
+```js
+/**
+ * 函数的功能是让tokens数组变为dom字符串
+ */
+export default function renderTemplate(tokens, data) {
+  console.log(tokens, data);
+  // 结果字符串
+  var resultStr = '';
+  // 遍历tokens
+  for (var i = 0; i < tokens.length; i++) {
+    let token = tokens[i];
+
+    // 看类型
+    if (token[0] == 'text') {
+      // 拼起来
+      resultStr += token[1];
+    } else if (token[0] == 'name') {
+      resultStr += data[token[1]];
+    }
+  }
+
+  console.log(resultStr);
+  return resultStr;
+}
+```
+
+​	
+
+# 13 手写lookup函数
+
+**lookup.js**
+
+```js
+/**
+ * 功能是可以在dataObj对象中 寻找用连续点符号的keyname属性（这个函数曾经作为面试题出现过）
+ * 比如 dataObj是
+ * {
+      a: {
+        b: {
+          c: 100
+        }
+      }
+    }
+    那么lookup(dataObj, 'a.b.c')结果就是100
+ */
+export default function lookup(dataObj, keyName) {
+  // console.log(dataObj, keyName);
+  // 看看keyName中有没有点符号
+  if (keyName.indexOf('.') != -1) {
+    // 如果有点符号 那么拆开
+    var keys = keyName.split('.');
+    // 设置一个临时变量 这个临时变量用于周转 一层一层找下去
+    var temp = dataObj;
+    // 每找一层 就把它设置为新的临时变量
+    for (var i = 0; i < keys.length; i++) {
+      temp = temp[keys[i]];
+    }
+
+    // console.log(temp);
+    return temp;
+  }
+  // 如果这里面没有点符号
+  return dataObj[keyName];
+}
+
+```
+
+lookup函数运用
+
+**renderTemplate.js**
+
+```js
+import lookup from "./lookup";
+/**
+ * 函数的功能是让tokens数组变为dom字符串
+ */
+export default function renderTemplate(tokens, data) {
+  console.log(tokens, data);
+  // 结果字符串
+  var resultStr = '';
+  // 遍历tokens
+  for (var i = 0; i < tokens.length; i++) {
+    let token = tokens[i];
+
+    // 看类型
+    if (token[0] == 'text') {
+      // 拼起来
+      resultStr += token[1];
+    } else if (token[0] == 'name') {
+      // 如果是name类型 那么就直接使用它的值 当然要用lookup
+      // 因为防止这里是'a.b.c'有逗号的形式
+      resultStr += lookup(data, token[1]);
+    } else if (token[0] == '#') {
+
+    }
+  }
+
+  console.log(resultStr);
+  return resultStr;
+}
+```
+
+​	
+
+# 14 手写parseArray函数 
+
+**parseArray.js**
+
+```js
+import lookup from "./lookup";
+import renderTemplate from "./renderTemplate";
+/**
+ * 处理数组 结合renderTemplate实现递归
+ * 注意 这个函数收的参数是token！而不是tokens！
+ * token是什么 就是一个简单的['#', 'students', []]
+ * 
+ * 这个函数要递归调用renderTemplate函数 调用多少次由data决定
+ * 比如data的形式是这样的
+ * {
+      students: [
+        { name: '小明', hobbies: ['游泳', '羽毛球'] },
+        { name: '小红', hobbies: ['编程', '写作文', '看报纸'] },
+        { name: '小强', hobbies: ['打台球'] },
+      ]
+    }
+    那么parseArray()函数就要递归调用renderTemplate函数3次 因为数组的长度是3
+ */
+export default function parseArray(token, data) {
+  // console.log(token, data);
+  // 得到整体数据data中这个数组要使用的部分
+  var v = lookup(data, token[1]);
+  // console.log(v);
+  // 结果字符串
+  var resultStr = '';
+  // 遍历v数组 v一定是数组（因为我们这里不对布尔值进行考虑 我们做的是简易版mustache 源码mustache #后面可以加布尔值 但这我们不考虑这种情况）
+  // 注意 下面这个循环可能是整个包中最难思考的一个循环
+  // 它是遍历数据 而不是遍历tokens 数据中数据有几条 就要遍历几条
+  for (var i = 0; i < v.length; i++) {
+    // 这里要补一个'.'属性
+    // 拼接
+    resultStr += renderTemplate(token[2], {
+      ...v[i],
+      '.': v[i]
+    });
+  }
+  return resultStr;
+};
+
+```
+
+对 `parseTemplateToTokens.js` 文件做了去空格的处理（标签外空格去掉 标签内空格保留）
+
+**parseTemplateToTokens.js**
+
+```js
+export default function parseTemplateToTokens(templateStr) {
+  var tokens = [];
+  // 创建扫描器
+  var scanner = new Scanner(templateStr);
+  var words;
+  // 让扫描器工作
+  while (!scanner.eos()) {
+    // 收集开始标记出现之前的文字
+    words = scanner.scanUntil('{{');
+    if (words != '') {
+      // 尝试写一下去掉空格 智能判断是普通文字的空格 还是标签中的空格
+      // 标签中的空格不能去掉 比如<div class='box'>不能去掉class前面的空格
+      let isInJJH = false;
+      // 空白字符串
+      var _words = '';
+      for (var i = 0; i < words.length; i++) {
+        // 判断是否在标签里
+        if (words[i] == '<') {
+          isInJJH = true;
+        } else if (words[i] == '>') {
+          isInJJH = false;
+        }
+        //  如果这项不是空格 拼接上
+        if (!/\s/.test(words[i])) {
+          _words += words[i];
+        } else {
+          // 如果这项是空格 只有当它在标签内的时候 才能拼接上
+          if (isInJJH) {
+            _words += " ";
+          }
+        }
+      }
+      // console.log(_words);
+      // 存起来 去掉空格
+      tokens.push(['text', _words]);
+```
+
+​	
+
+# 15 课程总结
+
+![image-20221109172211584](mustache.assets/image-20221109172211584.png)

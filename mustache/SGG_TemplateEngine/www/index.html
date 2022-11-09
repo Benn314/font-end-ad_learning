@@ -7,54 +7,54 @@
     <title>Document</title>
   </head>
   <body>
-    <h1>我是index.html 你好！！</h1>
-    <h2>我是index.html 你好！！</h2>
-    <h3>我是index.html 你好！！</h3>
+    <div id="container"></div>
 
     <!-- 它是一个虚拟打包路径 所以不会真正生成bundle.js -->
     <script src="/xuni/bundle.js"></script>
 
-    <!-- <script type="text/template">
-      <div>
-        <ol>
-          {{#students}}
-          <li>
-            学生{{item.name}}的爱好是
-            <ol>
-              {{#item.hobbies}}
-              <li>{{.}}</li>
-              {{/item.hobbies}}
-            </ol>
-          </li>
-          {{/students}}
-        </ol>
-      </div>
-    </script> -->
-
     <script>
       // 模板字符串
-      // var templateStr = '我买了一个{{thing}}，好{{mood}}啊';
+      // var templateStr = '我买了一个{{thing}}，好{{mood}}啊, 我考了{{a.b.c}}分';
       var templateStr = `
         <div>
-          <ol>
+          <ul>
             {{#students}}
-            <li>
-              学生{{item.name}}的爱好是
+            <li class="myli">
+              学生{{name}}的爱好是
               <ol>
-                {{#item.hobbies}}
+                {{#hobbies}}
                 <li>{{.}}</li>
-                {{/item.hobbies}}
+                {{/hobbies}}
               </ol>
             </li>
             {{/students}}
-          </ol>
+          </ul>
         </div>
       `;
 
       // 数据
-      var data = {};
+      var data = {
+        students: [
+          { name: '小明', hobbies: ['游泳', '羽毛球'] },
+          { name: '小红', hobbies: ['编程', '写作文', '看报纸'] },
+          { name: '小强', hobbies: ['打台球'] },
+        ],
+        // thing: '华为手机',
+        // mood: '开心',
+        // a: {
+        //   b: {
+        //     c: 123,
+        //   },
+        // },
+      };
+
       // 调用render
-      SSG_TemplateEngine.render(templateStr, data);
+      var domStr = SSG_TemplateEngine.render(templateStr, data);
+
+      // 渲染上树
+      var container = document.getElementById('container');
+      container.innerHTML = domStr;
+      console.log(domStr);
     </script>
   </body>
 </html>

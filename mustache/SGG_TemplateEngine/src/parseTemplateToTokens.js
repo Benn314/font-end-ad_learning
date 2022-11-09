@@ -14,8 +14,31 @@ export default function parseTemplateToTokens(templateStr) {
     // 收集开始标记出现之前的文字
     words = scanner.scanUntil('{{');
     if (words != '') {
-      // 存起来
-      tokens.push(['text', words]);
+      // 尝试写一下去掉空格 智能判断是普通文字的空格 还是标签中的空格
+      // 标签中的空格不能去掉 比如<div class='box'>不能去掉class前面的空格
+      let isInJJH = false;
+      // 空白字符串
+      var _words = '';
+      for (var i = 0; i < words.length; i++) {
+        // 判断是否在标签里
+        if (words[i] == '<') {
+          isInJJH = true;
+        } else if (words[i] == '>') {
+          isInJJH = false;
+        }
+        //  如果这项不是空格 拼接上
+        if (!/\s/.test(words[i])) {
+          _words += words[i];
+        } else {
+          // 如果这项是空格 只有当它在标签内的时候 才能拼接上
+          if (isInJJH) {
+            _words += " ";
+          }
+        }
+      }
+      // console.log(_words);
+      // 存起来 去掉空格
+      tokens.push(['text', _words]);
     }
     // 过双大括号
     scanner.scan('{{');
